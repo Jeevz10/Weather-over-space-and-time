@@ -2,9 +2,10 @@ const KoaRouter = require('@koa/router');
 
 const AppRouter = new KoaRouter();
 
-AppRouter.get('/:start/:end/:mode/:increment', (ctx, next) => {
-    console.log(ctx.query);
-    ctx.body = start;
+AppRouter.get('/route-weather', (ctx, next) => {
+    const params = ctx.query;
+    ctx.body = params;
+    console.log(params);
 })
 
 AppRouter.get('/', (ctx, next) => {
