@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Jeevz10/Weather-over-space-and-time#readme",
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "axios": "^0.21.1",
     "koa": "^2.13.1",
     "lodash": "^4.17.20",
     "nodemon": "^2.0.7"
