@@ -7,7 +7,8 @@ module.exports = {
         const givenKeys = Object.keys(ctx.query);
         const absentKeys = _.difference(REQUIRED_KEYS, givenKeys);
         console.log(givenKeys, absentKeys);
-        // TODO Give proper error handling 
+
+        // TODO Give proper error handling with error codes and stuff 
 
         if (absentKeys.length == 0) {
             next();
