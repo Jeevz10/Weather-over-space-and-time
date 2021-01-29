@@ -10,7 +10,7 @@ class WeatherOverSpaceAndTime{
 
     startServer() {
         const server = new Koa();
-        // server.use(this.Router);
+        server.use(this.Router.routes());
         server.listen(PORTNUMBER);
     }
 
