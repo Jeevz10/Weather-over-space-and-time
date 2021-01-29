@@ -1,0 +1,24 @@
+{
+  "name": "Weather-over-space-and-time",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jeevz10/Weather-over-space-and-time.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jeevz10/Weather-over-space-and-time/issues"
+  },
+  "homepage": "https://github.com/Jeevz10/Weather-over-space-and-time#readme",
+  "dependencies": {
+    "@koa/router": "^10.0.0",
+    "koa": "^2.13.1"
+  }
+}
