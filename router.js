@@ -1,6 +1,6 @@
 const KoaRouter = require('@koa/router');
 const AppRouter = new KoaRouter();
-const { checkQueryParams } = require('./middleware');
+const { checkQueryParams, checkInvalidValues } = require('./middleware');
 
 // TODO Add error handling for incorrect params 
 // https://stackoverflow.com/questions/43256916/koa-router-how-to-get-query-string-params
@@ -10,7 +10,7 @@ const { checkQueryParams } = require('./middleware');
 //     console.log(params);
 // })
 
-AppRouter.get('/route-weather', checkQueryParams, async (ctx) => {
+AppRouter.get('/route-weather', checkQueryParams, checkInvalidValues, async (ctx) => {
     const params = ctx.query;
     console.log(params);
     ctx.body = params;
