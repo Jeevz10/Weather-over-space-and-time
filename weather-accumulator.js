@@ -18,10 +18,7 @@ class WeatherAccumulator {
     async getInitialWeather() {
         console.log(this.startLat, this.startLng);
         const initialWeather = await makeOpenWeatherAPICall(this.startLat, this.startLng);
-        console.log(initialWeather);
-        console.log(this.weatherData);
-        this.weatherData.push(initialWeather);
-        console.log(this.weatherData);
+        WeatherAccumulator.weatherData.push(initialWeather); // to access static variables. use Class Name instead of this 
     }
 
 }
