@@ -1,5 +1,7 @@
 const { makeOpenWeatherAPICall } = require('./weather');
 
+// https://stackoverflow.com/questions/1535631/static-variables-in-javascript
+
 class WeatherAccumulator {
     static durationAccumulator = 0;
     static weatherData = [];
@@ -11,9 +13,15 @@ class WeatherAccumulator {
         this.endLng = endLng;
         this.increment = increment;
         this.totalDuration = totalDuration;
+    }
 
-
-        console.log(this.startLat, this.startLng, this.endLat, this.endLng, this.increment, this.totalDuration);
+    async getInitialWeather() {
+        console.log(this.startLat, this.startLng);
+        const initialWeather = await makeOpenWeatherAPICall(this.startLat, this.startLng);
+        console.log(initialWeather);
+        console.log(this.weatherData);
+        this.weatherData.push(initialWeather);
+        console.log(this.weatherData);
     }
 
 }
