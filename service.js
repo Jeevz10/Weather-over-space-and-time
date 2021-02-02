@@ -17,7 +17,7 @@ class Service {
 
     async getRoute() {
         const route = await makeGoogleMapsAPICall(this.start, this.end, this.mode);
-        console.log(route);
+        console.log(JSON.stringify(route));
         return route;
     }
 }

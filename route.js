@@ -8,7 +8,7 @@ const URL = 'https://maps.googleapis.com/maps/api/distancematrix/json';
 // https://stackoverflow.com/questions/32994634/this-api-project-is-not-authorized-to-use-this-api-please-ensure-that-this-api
 async function makeGoogleMapsAPICall(origins, destinations, mode) {
 
-    return axios.get(URL, {
+    const response = await axios.get(URL, {
         params: {
             origins,
             destinations,
@@ -16,9 +16,9 @@ async function makeGoogleMapsAPICall(origins, destinations, mode) {
             key: GOOGLE_MAPS_API_KEY,
         }
     })
-    .then((response) => {
-        return response.data;
-    })
+    .then(response => response.data)
+
+    return response;
 }
 
 module.exports = {
