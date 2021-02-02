@@ -1,5 +1,5 @@
-const { makeOpenWeatherAPICall } = require('./weather');
 const { makeGoogleMapsAPICall } = require('./route');
+const { WeatherAccumulator } = require('./weather-accumulator');
 
 class Service {
 
@@ -11,14 +11,27 @@ class Service {
     }
 
     async getWeatherOverSpaceAndTime() {
-        const route = this.getRoute();
-        return route;
+        const leg = await this.getLegs();
+        this.extractData(leg);
+        const WeatherAccumulatorInstance = new WeatherAccumulator(this.startLat, this.startLng, this.endLat, this.endLng, this.duration, this.increment);
+
+        return leg;
     }
 
-    async getRoute() {
+    async getLegs() {
         const route = await makeGoogleMapsAPICall(this.start, this.end, this.mode);
-        console.log(JSON.stringify(route));
-        return route;
+        const leg = route.routes[0].legs[0];
+        return leg;
+    }
+
+    extractData(leg) {
+        this.startLat = leg.start_location.lat;
+        this.startLng = leg.start_location.lng;
+
+        this.endLat = leg.end_location.lat;
+        this.endLng = leg.end_location.lng;
+
+        this.duration = leg.duration.value;
     }
 }
 
