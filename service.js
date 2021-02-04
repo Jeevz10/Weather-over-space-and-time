@@ -16,7 +16,7 @@ class Service {
         const WeatherAccumulatorInstance = new WeatherAccumulator(this.startLat, this.startLng, this.endLat, this.endLng, this.duration, this.increment);
         const steps = leg.steps;
         const result = await this.gatherWeatherData(WeatherAccumulatorInstance, steps);
-        return { steps , result };
+        return { result };
     }
 
     async getLegs() {
