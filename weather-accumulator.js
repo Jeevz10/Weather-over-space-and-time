@@ -7,14 +7,14 @@ class WeatherAccumulator {
     static incrementAccumulator = 0;
     static weatherData = [];
     
-    constructor(startLat, startLng, endLat, endLng, increment, totalDuration) {
+    constructor(startLat, startLng, endLat, endLng, totalDuration, increment) {
         this.startLat = startLat;
         this.startLng = startLng;
         this.endLat = endLat;
         this.endLng = endLng;
         this.increment = parseInt(increment);
         this.incrementInSeconds = this.increment * 60;
-        console.log('incremenet' + this.incrementInSeconds + this.increment);
+        console.log('incremenet' + this.incrementInSeconds + this.increment + typeof(this.increment));
         WeatherAccumulator.incrementAccumulator += this.incrementInSeconds;
         this.totalDuration = totalDuration;
     }
