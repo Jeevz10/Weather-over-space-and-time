@@ -24,6 +24,14 @@ class WeatherAccumulator {
     }
 
 
+    /**
+     * 
+     * @param {step} step
+     * 
+     * Initial idea was to allow for minutely, 15-min, 30-min, 45-min and hourly forecast data. However, due to the limitations of the 
+     * weather data, the minutely data required to calculate 15, 30 and 45 min intervals of weather forecast is insufficient. Hence, the
+     * weather data of a given place will be given unless an hour has passed for which it will be acted upon accordingly  
+     */
 
     async determineWeather(step) {
         const secondsPerStep = step.duration.value;
@@ -50,8 +58,6 @@ class WeatherAccumulator {
             WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
             // console.log(WeatherAccumulator.weatherData);
         }
-
-        return WeatherAccumulator.weatherData;
     }
 
     getFinalData() {
