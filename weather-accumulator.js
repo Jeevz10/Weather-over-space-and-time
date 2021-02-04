@@ -12,9 +12,8 @@ class WeatherAccumulator {
         this.startLng = startLng;
         this.endLat = endLat;
         this.endLng = endLng;
-        this.increment = parseInt(increment);
+        this.increment = increment;
         this.incrementInSeconds = this.increment * 60;
-        console.log('incremenet' + this.incrementInSeconds + this.increment + typeof(this.increment));
         WeatherAccumulator.incrementAccumulator += this.incrementInSeconds;
         this.totalDuration = totalDuration;
     }
