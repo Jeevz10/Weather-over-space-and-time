@@ -14,15 +14,14 @@ const { Service } = require('./service');
 
 AppRouter.get('/route-weather', checkQueryParams, checkInvalidValues, async (ctx) => {
     const { start, end, mode, increment } = ctx.query;
-    console.log(start, end, mode, increment);
+    // console.log(start, end, mode, increment);
     const serviceInstance = new Service(start, end, mode, increment);
     const result = await serviceInstance.getWeatherOverSpaceAndTime();
-    console.log(result);
     ctx.body = result;
 })
 
 AppRouter.get('/', (ctx, next) => {
-    console.log('hello world');
+    // console.log('hello world');
 })
 
 module.exports = AppRouter;

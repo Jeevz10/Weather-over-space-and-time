@@ -23,11 +23,13 @@ class WeatherAccumulator {
         WeatherAccumulator.weatherData.push(initialWeather); // to access static variables. use Class Name instead of this 
     }
 
+
+
     async determineWeather(step) {
         const secondsPerStep = step.duration.value;
-        console.log(secondsPerStep);
-        console.log(WeatherAccumulator.durationAccumulator);
-        console.log(WeatherAccumulator.incrementAccumulator);
+        // console.log(secondsPerStep);
+        // console.log(WeatherAccumulator.durationAccumulator);
+        // console.log(WeatherAccumulator.incrementAccumulator);
         WeatherAccumulator.durationAccumulator += secondsPerStep;
 
         if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
@@ -46,9 +48,14 @@ class WeatherAccumulator {
             }
 
             WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
-            console.log(WeatherAccumulator.weatherData);
+            // console.log(WeatherAccumulator.weatherData);
         }
 
+        return WeatherAccumulator.weatherData;
+    }
+
+    getFinalData() {
+        return WeatherAccumulator.weatherData;
     }
 
 }
