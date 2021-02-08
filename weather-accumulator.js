@@ -6,8 +6,6 @@ class WeatherAccumulator {
     static durationAccumulator = 0;
     static incrementAccumulator = 0;
     static weatherData = [];
-    static EXCLUDE_EVERYTHING_BUT_CURRENTLY = 'minutely,hourly,daily,alerts';
-    static EXCLUDE_EVERYTHING_BUT_HOURLY = 'minutely,current,daily,alerts';
     
     constructor(startLat, startLng, endLat, endLng, totalDuration, increment) {
         this.startLat = startLat;
@@ -40,11 +38,12 @@ class WeatherAccumulator {
         const SECONDS_IN_AN_HOUR = 60 * 60; 
 
         const secondsPerStep = step.duration.value;
+
+        WeatherAccumulator.durationAccumulator += secondsPerStep;
         console.log('seconds per step: ' + secondsPerStep);
         console.log('duration accumulator: ' + WeatherAccumulator.durationAccumulator);
         console.log('increment accumulator: ' + WeatherAccumulator.incrementAccumulator);
         console.log(' ');
-        WeatherAccumulator.durationAccumulator += secondsPerStep;
 
         // Initial value of incrementAccumulator is increment x 60 
         // if total time thus far in journey has eclipsed the increment counter -> time to make readings for this particular location 
@@ -53,7 +52,8 @@ class WeatherAccumulator {
                 const startLat = step.start_location.lat;
                 const startLng = step.start_location.lng;
     
-                const startWeather = await makeOpenWeatherAPICall(startLat, startLng, WeatherAccumulator.EXCLUDE_EVERYTHING_BUT_CURRENTLY);
+                const startWeather = await this.getCurrentWeather(startLat, startLng);
+                console.log('if start');
                 WeatherAccumulator.weatherData.push(startWeather);
                 
                 // in case duration for particular step is longer than the increment specified
@@ -61,22 +61,24 @@ class WeatherAccumulator {
                     const endLat = step.end_location.lat;
                     const endLng = step.end_location.lng;
     
-                    const endWeather = await makeOpenWeatherAPICall(endLat, endLng, WeatherAccumulator.EXCLUDE_EVERYTHING_BUT_HOURLY);
+                    const endWeather = await this.getHourlyWeather(endLat, endLng);
                     WeatherAccumulator.weatherData.push(endWeather);
+                    console.log('if end');
+
                 }
     
                 WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
             }
         } else {
             if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
-                console.log('hereee');
                 const noOfHoursAfter = this.incrementInSeconds/SECONDS_IN_AN_HOUR;
                 const startLat = step.start_location.lat;
                 const startLng = step.start_location.lng;
     
                 const startWeather = await makeOpenWeatherAPICall(startLat, startLng, WeatherAccumulator.EXCLUDE_EVERYTHING_BUT_CURRENTLY);
                 WeatherAccumulator.weatherData.push(startWeather);
-                
+                console.log('else start');
+
                 // in case duration for particular step is longer than the increment specified
                 if (secondsPerStep > this.incrementInSeconds) {
                     const endLat = step.end_location.lat;
@@ -84,6 +86,8 @@ class WeatherAccumulator {
     
                     const endWeather = await makeOpenWeatherAPICall(endLat, endLng, WeatherAccumulator.EXCLUDE_EVERYTHING_BUT_CURRENTLY);
                     WeatherAccumulator.weatherData.push(endWeather);
+                    console.log('else end');
+
                 }
     
                 WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
@@ -95,6 +99,19 @@ class WeatherAccumulator {
     getFinalData() {
         return WeatherAccumulator.weatherData;
     }
+
+    async getCurrentWeather(lat, lng) {
+       const EXCLUDE_EVERYTHING_BUT_CURRENTLY = 'minutely,hourly,daily,alerts';
+       const currentWeather = await makeOpenWeatherAPICall(lat, lng, EXCLUDE_EVERYTHING_BUT_CURRENTLY);
+        return currentWeather;
+    }
+
+    async getHourlyWeather(lat, lng) {
+        const EXCLUDE_EVERYTHING_BUT_HOURLY = 'minutely,current,daily,alerts';
+        const hourlyWeather = await makeOpenWeatherAPICall(lat, lng, EXCLUDE_EVERYTHING_BUT_HOURLY);
+        return hourlyWeather;
+    }
+
 
 }
 
