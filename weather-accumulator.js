@@ -10,22 +10,12 @@ class WeatherAccumulator {
     static SECONDS_IN_AN_HOUR = 60 * 60; 
 
     
-    constructor(startLat, startLng, endLat, endLng, totalDuration, increment) {
-        this.startLat = startLat;
-        this.startLng = startLng;
-        this.endLat = endLat;
-        this.endLng = endLng;
+    constructor(totalDuration, increment) {
         this.increment = increment;
         this.incrementInSeconds = this.increment * 60;
         WeatherAccumulator.incrementAccumulator += this.incrementInSeconds;
         this.totalDuration = totalDuration;
     }
-
-    async getInitialWeather() {
-        const initialWeather = await this.getCurrentWeather(this.startLat, this.startLng);
-        WeatherAccumulator.weatherData.push(initialWeather); // to access static variables. use Class Name instead of this 
-    }
-
 
     /**
      * 
@@ -94,6 +84,12 @@ class WeatherAccumulator {
     //     WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
     // }
 
+    /**
+     * 
+     * @param {step} step
+     * 
+     * For step, we are trying to find out if  
+     */
     async determineWeather(step) {
 
         const secondsPerStep = step.duration.value;
@@ -106,57 +102,70 @@ class WeatherAccumulator {
         console.log(' ');
 
         // Initial value of incrementAccumulator is increment x 60 
-        // if total time thus far in journey has eclipsed the increment counter -> time to make readings for this particular location 
         if (WeatherAccumulator.incrementAccumulator < WeatherAccumulator.SECONDS_IN_AN_HOUR) {
+
+            // For this particular step, it is time to gather weather data --> begin with the starting location 
             if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
+                // 
                 const startLat = step.start_location.lat;
                 const startLng = step.start_location.lng;
     
                 const startWeather = await this.getCurrentWeather(startLat, startLng);
-                console.log('if start');
                 WeatherAccumulator.weatherData.push(startWeather);
+                console.log('if start');
                 
-                // in case duration for particular step is longer than the increment specified
+                // in case duration for particular step is longer than an hour, we need to get hourly data 
                 if (secondsPerStep >= WeatherAccumulator.SECONDS_IN_AN_HOUR) {
-                    const endHourIncrement = this.calculateEndHours();
+                    // const endHourIncrement = this.calculateEndHours();
                     const endLat = step.end_location.lat;
                     const endLng = step.end_location.lng;
                     const endWeather = await this.getHourlyWeather(endLat, endLng);
-                    const endWeatherData = this.handleHourlyData(endWeather, endHourIncrement);
+                    // const endWeatherData = this.handleHourlyData(endWeather, endHourIncrement);
 
-                    WeatherAccumulator.weatherData.push(endWeatherData);
+                    WeatherAccumulator.weatherData.push(endWeather);
                     console.log('if more than an hour');
-
                 } else if (secondsPerStep > this.incrementInSeconds) {
+
+                    // in case the duration for particular step is longer than increment time, we need to gather the weather data for the end location 
                     const endLat = step.end_location.lat;
                     const endLng = step.end_location.lng;
     
                     const endWeather = await this.getCurrentWeather(endLat, endLng);
                     WeatherAccumulator.weatherData.push(endWeather);
                     console.log('if end');
-
                 }
-                WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
+
+                // Need to accordingly adjust incrementAccumulator readings 
+                if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.SECONDS_IN_AN_HOUR) {
+                    // if duration of particular step is longer than an hour, increase the accumulator by the amount of hours 
+                    WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
+                } else {
+                    WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
+                }
             }
         } else {
+            // handle situation when route time has taken more than an hour. In this case, increments no longer hold value. Updates are done hourly. 
             if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
                 const startLat = step.start_location.lat;
                 const startLng = step.start_location.lng;
     
                 const startWeather = await this.getHourlyWeather(startLat, startLng);
-                const startWeatherData = this.handleHourlyData(startWeather);
-                WeatherAccumulator.weatherData.push(startWeatherData);
+                // const startWeatherData = this.handleHourlyData(startWeather);
+                WeatherAccumulator.weatherData.push(startWeather);
                 console.log('else start');
 
-                const endHourIncrement = this.calculateEndHours();
-                const endLat = step.end_location.lat;
-                const endLng = step.end_location.lng;
-                const endWeather = await this.getHourlyWeather(endLat, endLng);
-                const endWeatherData = this.handleHourlyData(endWeather, endHourIncrement);
-                WeatherAccumulator.weatherData.push(endWeatherData);
-                console.log('else end')
+                // in case duration for particular step is longer than an hour, need to get the weather data for that end point that hour it ends at 
+                if (secondsPerStep >= WeatherAccumulator.SECONDS_IN_AN_HOUR) {
+                    // const endHourIncrement = this.calculateEndHours();
+                    const endLat = step.end_location.lat;
+                    const endLng = step.end_location.lng;
+                    const endWeather = await this.getHourlyWeather(endLat, endLng);
+                    WeatherAccumulator.weatherData.push(endWeather);
+                    console.log('end end')
+                    // const endWeatherData = this.handleHourlyData(endWeather, endHourIncrement);             
+                } 
 
-                WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
+                WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
             }
 
         }

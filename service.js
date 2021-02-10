@@ -12,8 +12,8 @@ class Service {
 
     async getWeatherOverSpaceAndTime() {
         const leg = await this.getLegs();
-        this.extractData(leg);
-        const WeatherAccumulatorInstance = new WeatherAccumulator(this.startLat, this.startLng, this.endLat, this.endLng, this.duration, this.increment);
+        const totalDuration = leg.duration.value;
+        const WeatherAccumulatorInstance = new WeatherAccumulator(totalDuration, this.increment);
         const steps = leg.steps;
         const result = await this.gatherWeatherData(WeatherAccumulatorInstance, steps);
         return { result };
@@ -25,21 +25,18 @@ class Service {
         return leg;
     }
 
-    extractData(leg) {
-        this.startLat = leg.start_location.lat;
-        this.startLng = leg.start_location.lng;
-
-        this.endLat = leg.end_location.lat;
-        this.endLng = leg.end_location.lng;
-
-        this.duration = leg.duration.value;
-    }
-
+    /**
+     * 
+     * @param {*} WeatherAccumulatorInstance 
+     * @param {*} steps 
+     * 
+     * The goal of this function is split into 2 parts: 
+     * (1) weather data in specified increments up till an hour 
+     * (2) weather data every other hour 
+     */
     async gatherWeatherData(WeatherAccumulatorInstance, steps) {
         const numberOfSteps = steps.length;
         
-        await WeatherAccumulatorInstance.getInitialWeather();
-
         for (let i = 0; i < numberOfSteps; i++) {
             await WeatherAccumulatorInstance.determineWeather(steps[i]);
         }
