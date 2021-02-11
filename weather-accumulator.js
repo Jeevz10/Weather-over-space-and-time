@@ -84,17 +84,26 @@ class WeatherAccumulator {
                 const endWeatherFinalData = this.handleHourlyData(endWeather);
                 WeatherAccumulator.weatherData.push(endWeatherFinalData);
             }
-            if (Math.ceil((WeatherAccumulator.durationAccumulator - WeatherAccumulator.incrementAccumulator) / WeatherAccumulator.SECONDS_IN_AN_HOUR) > 1) {
-                await this.handleLongerInstancesAfterOneHour(startLat, startLng, endLat, endLng);
-            } else if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
-                // handle cases when duration is longer than increment but has not jumped increments
 
-                await this.handleAfterOneHour(startLat, startLng, endLat, endLng, secondsPerStep);
+            if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
+                if (this.hourCounter() > 1) {
+                    await this.handleLongerInstancesAfterOneHour(startLat, startLng, endLat, endLng);
+                } else {
+                    // handle cases when duration is longer than increment but has not jumped increments
+                    await this.handleAfterOneHour(startLat, startLng, endLat, endLng, secondsPerStep);
+                } 
+                WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
             } else {
                 WeatherAccumulator.previousEndPointRecorded = false;
             }
-            WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
+
         }
+    }
+
+    hourCounter() {
+        const hourCounter = Math.ceil((WeatherAccumulator.durationAccumulator - WeatherAccumulator.incrementAccumulator) / WeatherAccumulator.SECONDS_IN_AN_HOUR);
+        console.log('hour counter: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator + ' ' + hourCounter + '\n');
+        return hourCounter;
     }
 
     incrementCounter() {
@@ -134,13 +143,14 @@ class WeatherAccumulator {
             const startWeather = await this.getHourlyWeather(startLat, startLng);
             weather = this.handleHourlyData(startWeather);
             WeatherAccumulator.previousEndPointRecorded = false;
-
+            console.log('instances where it jumps to the next hour: start point recorded\n');
         } else {
             const endHourIncrement = this.calculateEndHours();
             WeatherAccumulator.currentHour += endHourIncrement;
             const endWeather = await this.getHourlyWeather(endLat, endLng);
             weather = this.handleHourlyData(endWeather);
             WeatherAccumulator.previousEndPointRecorded = true;
+            console.log('instances where it jumps 1 hour: end point recorded // prevEndPoint = true \n');
         }
 
         WeatherAccumulator.weatherData.push(weather);
