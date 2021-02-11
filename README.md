@@ -13,12 +13,19 @@
 - [Introduction](#introduction)
   * [Problem Statement](#problem-statement)
   * [Third-party APIs](#third-party-apis)
+    + [Directions - Google API](#directions---google-api)
+    + [Weather - OpenWeatherMap](#weather---openweathermap)
 - [Documentation](#documentation)
 - [Implementation](#implementation)
+  * [Before an Hour](#before-an-hour)
+  * [After an Hour](#after-an-hour)
+- [Babababazingaaaa](#babababazingaaaa)
 
 ## Introduction 
 
 ### Problem Statement 
+
+To create an API endpoint which takes in a start and end location, a mode of transport and in increment value. It is to return the weatherly forecast in the specified increment or hourly intervals. The weather data should include the temperature, percent chance preciptation, and location (lat and lon).
 
 ### Third-party APIs 
 
@@ -50,6 +57,18 @@ This API is able to give current and hourly weather updates for any lat and lon.
 That being said, I made do with what I had. I decided to use current weather data for any time period within the next hour. For any steps that happens after an hour, I used hourly data. 
 
 ## Documentation 
+
+`npm install`
+<br>
+`nodemon index.js`
+
+GET / http://localhost:3000/route-weather
+
+Required Query Params 
+
+| start  | end | mode | increment  | 
+| --- | --- | --- | --- | 
+| location (String) | location (String) | driving/walking/bicycling/transit | 1-60 | 
 
 ## Implementation 
 
@@ -91,7 +110,7 @@ General Rule - Only the starting and end locations of a step will be considered 
 
 (8) - This is tricky because the end point could happen anytime. It could happen before the hour like in (1), (9), (10) or after the hour like in (11). The point is, it could happen anywhere. This is why the last step provided by google map api will send a `lastStep` flag to denote its arrival. The weather data of the end point will be added. 
 
-#### Babababazingaaaa
+## Babababazingaaaa
 
 If you have reached till the end (which is right about now), then pat yourself on the back and go make yourself a drink! 
 ![](https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif)
