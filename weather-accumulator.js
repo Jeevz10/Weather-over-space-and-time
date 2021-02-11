@@ -45,12 +45,6 @@ class WeatherAccumulator {
                 WeatherAccumulator.startPointRecorded = true;
             } 
 
-            if (isLast) {
-                const endWeather = await this.getCurrentWeather(endLat, endLng);
-                WeatherAccumulator.weatherData.push(endWeather);
-                console.log('end point is smaller than first interval: end point pushed\n')
-            }
-
             // exclusively handle the cases when duration is lesser than an hour  
             
             if (WeatherAccumulator.durationAccumulator < WeatherAccumulator.SECONDS_IN_AN_HOUR) {
@@ -68,6 +62,8 @@ class WeatherAccumulator {
                         await this.handleBeforeOneHour(startLat, startLng, endLat, endLng, secondsPerStep);
                     }
                     WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
+                } else {
+                    WeatherAccumulator.previousEndPointRecorded = false;
                 }
             } else {
                 if (isLast) {
@@ -94,6 +90,8 @@ class WeatherAccumulator {
                 // handle cases when duration is longer than increment but has not jumped increments
 
                 await this.handleAfterOneHour(startLat, startLng, endLat, endLng, secondsPerStep);
+            } else {
+                WeatherAccumulator.previousEndPointRecorded = false;
             }
             WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
         }
@@ -203,6 +201,10 @@ class WeatherAccumulator {
     IsStartPointCloserThanEndPoint(secondsPerStep) {
         const differenceBetweenEndPointAndInterval = WeatherAccumulator.durationAccumulator - WeatherAccumulator.incrementAccumulator;
         const differenceBetweenStartPointAndInterval = secondsPerStep - differenceBetweenEndPointAndInterval;
+
+        console.log('Variables: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator + '\n');
+        console.log('difference between start and interval: ' + differenceBetweenStartPointAndInterval + '\n');
+        console.log('difference between interval and end: ' + differenceBetweenEndPointAndInterval + '\n');
 
         if (differenceBetweenStartPointAndInterval >= differenceBetweenEndPointAndInterval) {
             return false;
