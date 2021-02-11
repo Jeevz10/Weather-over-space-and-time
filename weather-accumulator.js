@@ -34,7 +34,8 @@ class WeatherAccumulator {
         console.log('duration accumulator: ' + WeatherAccumulator.durationAccumulator);
         console.log('increment accumulator: ' + WeatherAccumulator.incrementAccumulator);
         console.log('Was previous end point recorded? ' + WeatherAccumulator.previousEndPointRecorded);
-        console.log('Current Hour: ' + WeatherAccumulator.currentHour + '\n');
+        console.log('Current Hour: ' + WeatherAccumulator.currentHour);
+        console.log('is this the last?: ' + isLast + '\n');
 
         // handle cases before the hour 
         if (WeatherAccumulator.incrementAccumulator < WeatherAccumulator.SECONDS_IN_AN_HOUR) {
@@ -80,14 +81,15 @@ class WeatherAccumulator {
                 WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
             }
         } else {
-            if (isLast) {
-                const endWeather = await this.getHourlyWeather(endLat, endLng);
-                const endWeatherFinalData = this.handleHourlyData(endWeather);
-                WeatherAccumulator.weatherData.push(endWeatherFinalData);
-            }
 
             if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
-                if (this.hourCounter() > 1) {
+                if (isLast) {
+                    const endHourIncrement = this.hourCounter();
+                    WeatherAccumulator.currentHour += endHourIncrement;
+                    const endWeather = await this.getHourlyWeather(endLat, endLng);
+                    const endWeatherFinalData = this.handleHourlyData(endWeather);
+                    WeatherAccumulator.weatherData.push(endWeatherFinalData);
+                } else if (this.hourCounter() > 1) {
                     await this.handleLongerInstancesAfterOneHour(startLat, startLng, endLat, endLng);
                 } else {
                     // handle cases when duration is longer than increment but has not jumped increments
@@ -95,6 +97,11 @@ class WeatherAccumulator {
                 } 
                 WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
             } else {
+                if (isLast) {
+                    const endWeather = await this.getHourlyWeather(endLat, endLng);
+                    const endWeatherFinalData = this.handleHourlyData(endWeather);
+                    WeatherAccumulator.weatherData.push(endWeatherFinalData);
+                }
                 WeatherAccumulator.previousEndPointRecorded = false;
             }
 

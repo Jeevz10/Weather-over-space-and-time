@@ -40,10 +40,10 @@ class Service {
         for (let i = 0; i < numberOfSteps; i++) {
             if (i == numberOfSteps - 1) {
                 await WeatherAccumulatorInstance.determineWeather(steps[i], true);
+            } else {
+                await WeatherAccumulatorInstance.determineWeather(steps[i], false);
             }
-            await WeatherAccumulatorInstance.determineWeather(steps[i], false);
         }
-
         return WeatherAccumulatorInstance.getFinalData();
     }
 }
