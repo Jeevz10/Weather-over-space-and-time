@@ -231,11 +231,6 @@ class WeatherAccumulator {
         return { startLat, startLng, endLat, endLng, secondsPerStep };
     }
 
-    calculateEndHours() {
-        const endHourIncrement = (WeatherAccumulator.durationAccumulator - WeatherAccumulator.incrementAccumulator) / WeatherAccumulator.SECONDS_IN_AN_HOUR;
-        return endHourIncrement;  
-    }
-
     getFinalData() {
         return WeatherAccumulator.weatherData;
     }
