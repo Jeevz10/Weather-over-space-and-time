@@ -33,7 +33,8 @@ class WeatherAccumulator {
         console.log('seconds per step: ' + secondsPerStep);
         console.log('duration accumulator: ' + WeatherAccumulator.durationAccumulator);
         console.log('increment accumulator: ' + WeatherAccumulator.incrementAccumulator);
-        console.log('Was previous end point recorded? ' + WeatherAccumulator.previousEndPointRecorded + '\n');
+        console.log('Was previous end point recorded? ' + WeatherAccumulator.previousEndPointRecorded);
+        console.log('Current Hour: ' + WeatherAccumulator.currentHour + '\n');
 
         // handle cases before the hour 
         if (WeatherAccumulator.incrementAccumulator < WeatherAccumulator.SECONDS_IN_AN_HOUR) {
@@ -67,7 +68,7 @@ class WeatherAccumulator {
                 }
             } else {
                 if (isLast) {
-                    const endHourIncrement = this.calculateEndHours();
+                    const endHourIncrement = this.hourCounter();
                     WeatherAccumulator.currentHour += endHourIncrement;
                     const endWeather = await this.getHourlyWeather(endLat, endLng);
                     const endWeatherFinalData = this.handleHourlyData(endWeather);
@@ -113,17 +114,15 @@ class WeatherAccumulator {
     }
 
     async handleLongerInstancesAfterOneHour(startLat, startLng, endLat, endLng) {
+        const endHourIncrement = this.hourCounter();
+        WeatherAccumulator.currentHour += endHourIncrement;
+
         if (!WeatherAccumulator.previousEndPointRecorded) {
-            const endHourIncrement = this.calculateEndHours();
-            WeatherAccumulator.currentHour += endHourIncrement;
             const startWeather = await this.getHourlyWeather(startLat, startLng);
             const startWeatherFinalData = this.handleHourlyData(startWeather);
             WeatherAccumulator.weatherData.push(startWeatherFinalData);
             console.log('instances where it jumps 2 or more hours: start point recorded\n');
         }
-
-        const endHourIncrement = this.calculateEndHours();
-        WeatherAccumulator.currentHour += endHourIncrement;
 
         const endWeather = await this.getHourlyWeather(endLat, endLng);
         const endWeatherFinalData = this.handleHourlyData(endWeather);
@@ -137,16 +136,15 @@ class WeatherAccumulator {
         const isStartCloser = this.IsStartPointCloserThanEndPoint(secondsPerStep);
         let weather;
 
+        const endHourIncrement = this.hourCounter();
+        WeatherAccumulator.currentHour += endHourIncrement;
+
         if (isStartCloser & !WeatherAccumulator.previousEndPointRecorded) {
-            const endHourIncrement = this.calculateEndHours();
-            WeatherAccumulator.currentHour += endHourIncrement;
             const startWeather = await this.getHourlyWeather(startLat, startLng);
             weather = this.handleHourlyData(startWeather);
             WeatherAccumulator.previousEndPointRecorded = false;
             console.log('instances where it jumps to the next hour: start point recorded\n');
         } else {
-            const endHourIncrement = this.calculateEndHours();
-            WeatherAccumulator.currentHour += endHourIncrement;
             const endWeather = await this.getHourlyWeather(endLat, endLng);
             weather = this.handleHourlyData(endWeather);
             WeatherAccumulator.previousEndPointRecorded = true;
@@ -164,7 +162,7 @@ class WeatherAccumulator {
             console.log('instances where it breaks the hour: start point recorded\n');
         }
 
-        const endHourIncrement = this.calculateEndHours();
+        const endHourIncrement = this.hourCounter();
         WeatherAccumulator.currentHour += endHourIncrement;
 
         const endWeather = await this.getHourlyWeather(endLat, endLng);
