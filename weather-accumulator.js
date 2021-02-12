@@ -132,7 +132,7 @@ class WeatherAccumulator {
 
         if (!WeatherAccumulator.previousEndPointRecorded) {
             this.extractAndPushData(startLat, startLng);
-            console.log('instances where it jumps 2 or more hours: start point recorded\n');
+            console.log('instances where it jumps 2 or more hours: start point recorded');
         }
 
         this.extractAndPushData(endLat, endLng);
@@ -168,7 +168,7 @@ class WeatherAccumulator {
         if (!WeatherAccumulator.previousEndPointRecorded) {
             const startWeather = await this.getCurrentWeather(startLat, startLng);
             WeatherAccumulator.weatherData.push(startWeather);
-            console.log('instances where it breaks the hour: start point recorded\n');
+            console.log('instances where it breaks the hour: start point recorded');
         }
 
         this.increaseHour();
@@ -199,24 +199,24 @@ class WeatherAccumulator {
         if (isStartCloser && !WeatherAccumulator.previousEndPointRecorded) {
             weather = await this.getCurrentWeather(startLat, startLng);
             WeatherAccumulator.previousEndPointRecorded = false;
-            console.log('instances where it normally jumps an interval: start point recorded and prevEndPoint = false\n');
+            console.log('instances where it normally jumps an interval: start point recorded and prevEndPoint = false');
 
         } else {
             weather = await this.getCurrentWeather(endLat, endLng);
             WeatherAccumulator.previousEndPointRecorded = true;
-            console.log('instances where it normally jumps an interval: end point recorded and prevEndPoint = true\n');
+            console.log('instances where it normally jumps an interval: end point recorded and prevEndPoint = true');
 
         }
         WeatherAccumulator.weatherData.push(weather);
-        console.log('normal instance pushed');
+        console.log('normal instance pushed\n');
     }
 
     IsStartPointCloserThanEndPoint(secondsPerStep) {
         const differenceBetweenEndPointAndInterval = WeatherAccumulator.durationAccumulator - WeatherAccumulator.incrementAccumulator;
         const differenceBetweenStartPointAndInterval = secondsPerStep - differenceBetweenEndPointAndInterval;
 
-        console.log('Variables: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator + '\n');
-        console.log('difference between start and interval: ' + differenceBetweenStartPointAndInterval + '\n');
+        console.log('Variables: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator);
+        console.log('difference between start and interval: ' + differenceBetweenStartPointAndInterval);
         console.log('difference between interval and end: ' + differenceBetweenEndPointAndInterval + '\n');
 
         if (differenceBetweenStartPointAndInterval >= differenceBetweenEndPointAndInterval) {
