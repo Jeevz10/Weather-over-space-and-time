@@ -148,7 +148,7 @@ class WeatherAccumulator {
         const endHourIncrement = this.hourCounter();
         WeatherAccumulator.currentHour += endHourIncrement;
 
-        if (isStartCloser & !WeatherAccumulator.previousEndPointRecorded) {
+        if (isStartCloser && !WeatherAccumulator.previousEndPointRecorded) {
             const startWeather = await this.getHourlyWeather(startLat, startLng);
             weather = this.handleHourlyData(startWeather);
             WeatherAccumulator.previousEndPointRecorded = false;
@@ -196,7 +196,7 @@ class WeatherAccumulator {
         const isStartCloser = this.IsStartPointCloserThanEndPoint(secondsPerStep);
         let weather;
 
-        if (isStartCloser & !WeatherAccumulator.previousEndPointRecorded) {
+        if (isStartCloser && !WeatherAccumulator.previousEndPointRecorded) {
             weather = await this.getCurrentWeather(startLat, startLng);
             WeatherAccumulator.previousEndPointRecorded = false;
             console.log('instances where it normally jumps an interval: start point recorded and prevEndPoint = false\n');
