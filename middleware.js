@@ -29,9 +29,13 @@ module.exports = {
             }
        });
        
+       // check if any of the keys have invalid values 
        if (keysWithAbsentValues.length == 0) {
+           // check if the given mode is any of the 4 allowed 
            if (REQUIRED_MODE.includes(mode)) {
+               // check if the given increment is a number and is between 1 and 60 
                if (Number.isInteger(increment) && increment >= 1 && increment <= 60) {
+                   // check if the given start and end are of string types 
                    if (typeof start === 'string' && typeof end === 'string') {
                         await next();
                    } else {
