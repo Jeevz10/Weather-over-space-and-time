@@ -33,8 +33,8 @@ module.exports = {
        if (keysWithAbsentValues.length == 0) {
            // check if the given mode is any of the 4 allowed 
            if (REQUIRED_MODE.includes(mode)) {
-               // check if the given increment is a number and is between 1 and 60 
-               if (Number.isInteger(increment) && increment >= 1 && increment <= 60) {
+               // check if the given increment is between 1 and 60 
+               if (increment >= 1 && increment <= 60) {
                    // check if the given start and end are of string types 
                    if (typeof start === 'string' && typeof end === 'string') {
                         await next();
@@ -42,6 +42,7 @@ module.exports = {
                     ctx.throw(406, `Given start and end values has to be of string value describing their respective locations.`);
                    }
                } else {
+                   console.log(typeof increment + ' ' + increment);
                    ctx.throw(406, `Given increment - ${increment} is not valid. It has to be an integer in between the values of 1 to 60.`);
                }
            } else {
