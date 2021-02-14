@@ -36,7 +36,7 @@ module.exports = {
                // check if the given increment is between 1 and 60 
                if (increment >= 1 && increment <= 60) {
                    // check if the given start and end are of string types 
-                   if (typeof start === 'string' && typeof end === 'string') {
+                   if (isNaN(start) && isNaN(end)) {
                         await next();
                    } else {
                     ctx.throw(406, `Given start and end values has to be of string value describing their respective locations.`);
@@ -47,7 +47,7 @@ module.exports = {
                }
            } else {
                const requiredModeString = REQUIRED_MODE.toString().replace(/,/g, ", ");
-               ctx.throw(406, `Given mode: ${mode} is not any of the allowed modes: ${requiredModeString}`);
+               ctx.throw(406, `Given mode - ${mode} is not one of the 4 allowed modes: ${requiredModeString}`);
            }
        } else {
             const invalidKeysString = keysWithAbsentValues.toString().replace(/,/g, ", "); 

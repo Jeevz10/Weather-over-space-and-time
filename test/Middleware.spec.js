@@ -58,5 +58,49 @@ describe("Middleware tests", () => {
                 })
             })
         })
+        describe('Unaccepted modes', () => {
+            const testPortNumber = 8083;
+            const incompleteRequest = '/route-weather?start=b&end=c&mode=cycle&increment=2';
+            startServer(testPortNumber);
+            it ('should reject with a 406 mentioning that given mode is not one of the 4 accepted modes', (done) => {
+                Chai.request(testUrl + testPortNumber)
+                .get(incompleteRequest)
+                .end((err, res) => {
+                    res.should.have.status(406);
+                    res.text.should.eql('Given mode - cycle is not one of the 4 allowed modes: driving, walking, bicycling, transit');
+                    done();
+                })
+            })
+        })
+
+        describe('Unaccepted increment', () => {
+            const testPortNumber = 8084;
+            const incompleteRequest = '/route-weather?start=b&end=c&mode=bicycling&increment=0';
+            startServer(testPortNumber);
+            it ('should reject with a 406 mentioning that given increment is not within 1-60 range', (done) => {
+                Chai.request(testUrl + testPortNumber)
+                .get(incompleteRequest)
+                .end((err, res) => {
+                    res.should.have.status(406);
+                    res.text.should.eql('Given increment - 0 is not valid. It has to be an integer in between the values of 1 to 60.');
+                    done();
+                })
+            })
+        })
+
+        describe('Invalid start and end', () => {
+            const testPortNumber = 8085;
+            const incompleteRequest = '/route-weather?start=1&end=2&mode=bicycling&increment=4';
+            startServer(testPortNumber);
+            it ('should reject with a 406 mentioning that given start and end values has to be of string value', (done) => {
+                Chai.request(testUrl + testPortNumber)
+                .get(incompleteRequest)
+                .end((err, res) => {
+                    res.should.have.status(406);
+                    res.text.should.eql('Given start and end values has to be of string value describing their respective locations.');
+                    done();
+                })
+            })
+        })
     })
 })
