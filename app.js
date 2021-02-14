@@ -1,19 +1,20 @@
 const Koa = require('koa');
 
-const PORTNUMBER = 3000;
+// const PORTNUMBER = 3000;
 
 class WeatherOverSpaceAndTime{
 
-    constructor(Router, ErrorHandling) {
-        this.Router = Router;
-        this.ErrorHandling = ErrorHandling;
+    constructor(router, errorHandling, portNumber) {
+        this.Router = router;
+        this.ErrorHandling = errorHandling;
+        this.PortNumber = portNumber;
     }
 
     startServer() {
         const server = new Koa();
         server.use(this.ErrorHandling);
         server.use(this.Router.routes());
-        server.listen(PORTNUMBER);
+        server.listen(this.PortNumber);
     }
 
 }
