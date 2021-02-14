@@ -35,7 +35,7 @@ module.exports = {
            if (REQUIRED_MODE.includes(mode)) {
                // check if the given increment is between 1 and 60 
                if (increment >= 1 && increment <= 60) {
-                   // check if the given start and end are of string types 
+                   // check if the given start and end are not numbers: https://stackoverflow.com/questions/175739/built-in-way-in-javascript-to-check-if-a-string-is-a-valid-number#:~:text=Try%20the%20isNan%20function%3A,Otherwise%20it%20returns%20false.
                    if (isNaN(start) && isNaN(end)) {
                         await next();
                    } else {
