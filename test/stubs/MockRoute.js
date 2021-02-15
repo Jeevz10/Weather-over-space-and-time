@@ -1,37 +1,16 @@
+const { mockSlightlyMoreThanJustOneIntervalData,
+mockLessThanOneIntervalData } = require('./MockRouteData');
 
-const mockRouteData = {
-    routes: [
-        {
-            legs: [
-                {
-                    duration: {
-                        value: 123
-                    },
-                    steps: [
-                        {
-                            duration: {
-                                value: 12
-                            },
-                            end_location: {
-                                lat: 12,
-                                lon: 34,
-                            },
-                            start_location: {
-                                lat: 11,
-                                lon: 33,
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+
+function mockSlightlyMoreThanJustOneIntervalRoute() {
+    return mockSlightlyMoreThanJustOneIntervalData;
 }
 
-function mockRoute() {
-    return mockRouteData;
+function mockLessThanOneIntervalRoute() {
+    return mockLessThanOneIntervalData;
 }
 
 module.exports = {
-    mockRoute
+    mockSlightlyMoreThanJustOneIntervalRoute,
+    mockLessThanOneIntervalRoute
 }
