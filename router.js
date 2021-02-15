@@ -1,7 +1,7 @@
 const KoaRouter = require('@koa/router');
 const AppRouter = new KoaRouter();
 const { checkQueryParams, checkInvalidValues } = require('./middleware');
-const { Service } = require('./service');
+const Service = require('./service');
 
 
 // TODO Add error handling for incorrect params 

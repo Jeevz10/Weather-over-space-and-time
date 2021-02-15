@@ -1,7 +1,7 @@
-const { makeGoogleMapsAPICall } = require('./route');
-const { WeatherAccumulator } = require('./weather-accumulator');
+const makeGoogleMapsAPICall  = require('./route');
+const WeatherAccumulator = require('./weather-accumulator');
 
-class Service {
+module.exports = class Service {
 
     constructor(start, end, mode, increment) {
         this.start = start;
@@ -12,6 +12,7 @@ class Service {
 
     async getWeatherOverSpaceAndTime() {
         const leg = await this.getLegs();
+        console.log(leg);
         const totalDuration = leg.duration.value;
         const WeatherAccumulatorInstance = new WeatherAccumulator(totalDuration, this.increment);
         const steps = leg.steps;
@@ -46,8 +47,4 @@ class Service {
         }
         return WeatherAccumulatorInstance.getFinalData();
     }
-}
-
-module.exports = { 
-    Service
 }

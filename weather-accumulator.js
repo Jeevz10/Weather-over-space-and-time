@@ -1,8 +1,8 @@
-const { makeOpenWeatherAPICall } = require('./weather');
+const makeOpenWeatherAPICall = require('./weather');
 
 // https://stackoverflow.com/questions/1535631/static-variables-in-javascript
 
-class WeatherAccumulator {
+module.exports = class WeatherAccumulator {
     static durationAccumulator = 0;
     static incrementAccumulator = 0;
     static currentHour = 0;
@@ -266,9 +266,4 @@ class WeatherAccumulator {
         // }
         return { lat, lon, timezone, timezone_offset, hourlyData };
     }    
-}
-
-
-module.exports = {
-    WeatherAccumulator
 }

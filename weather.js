@@ -5,7 +5,7 @@ const URL = 'https://api.openweathermap.org/data/2.5/onecall';
 
 
 
-async function makeOpenWeatherAPICall(lat, lon, exclude) {
+module.exports = async function makeOpenWeatherAPICall(lat, lon, exclude) {
     const response = await axios.get(URL, {
         params: {
             lat,
@@ -17,8 +17,4 @@ async function makeOpenWeatherAPICall(lat, lon, exclude) {
     .then(response => response.data)
 
     return response;
-}
-
-module.exports = {
-    makeOpenWeatherAPICall
 }
