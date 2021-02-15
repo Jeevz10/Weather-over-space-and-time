@@ -7,8 +7,7 @@ const URL = 'https://maps.googleapis.com/maps/api/directions/json';
 
 
 // In order to use the API, you need to enable the key: https://stackoverflow.com/questions/32994634/this-api-project-is-not-authorized-to-use-this-api-please-ensure-that-this-api
-module.exports = async function makeGoogleMapsAPICall(origin, destination, travelMode) {
-
+async function makeGoogleMapsAPICall(origin, destination, travelMode) {
     const response = await axios.get(URL, {
         params: {
             origin,
@@ -20,4 +19,8 @@ module.exports = async function makeGoogleMapsAPICall(origin, destination, trave
     .then(response => response.data)
 
     return response;
+}
+
+module.exports = {
+    makeGoogleMapsAPICall
 }

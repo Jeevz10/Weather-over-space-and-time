@@ -1,4 +1,4 @@
-const makeGoogleMapsAPICall  = require('./route');
+const { makeGoogleMapsAPICall }  = require('./route');
 const WeatherAccumulator = require('./weather-accumulator');
 
 // why export doesnt work: https://stackoverflow.com/questions/38296667/getting-unexpected-token-export
@@ -22,7 +22,9 @@ module.exports = class Service {
     }
 
     async getLegs() {
+        console.log('im here');
         const route = await makeGoogleMapsAPICall(this.start, this.end, this.mode);
+        console.log(route);
         const leg = route.routes[0].legs[0];
         return leg;
     }
