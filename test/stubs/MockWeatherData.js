@@ -1,6 +1,8 @@
 const mockHourlyData = {
     lat: '123',
     lon: '456',
+    timezone: '+8',
+    timezone_offset: 'yeah',
     hourly: [
         {
             dt: '0',
