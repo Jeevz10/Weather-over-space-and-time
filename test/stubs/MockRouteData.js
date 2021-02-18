@@ -221,10 +221,152 @@ const mockThreeStepsSlightlyMoreThanAnHourData = {
     ]
 }
 
+const mockMoreThanAnHourData = {
+    routes: [
+        {
+            legs: [
+                {
+                    duration: {
+                        value: 720
+                    },
+                    steps: [
+                        {
+                            duration: {
+                                value: 3900
+                            },
+                            end_location: {
+                                lat: 12,
+                                lon: 34,
+                            },
+                            start_location: {
+                                lat: 11,
+                                lon: 33,
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+const mockThreeStepsMoreThanAnHourData = {
+    routes: [
+        {
+            legs: [
+                {
+                    duration: {
+                        value: 720
+                    },
+                    steps: [
+                        {
+                            duration: {
+                                value: 1000
+                            },
+                            end_location: {
+                                lat: 12,
+                                lon: 34,
+                            },
+                            start_location: {
+                                lat: 11,
+                                lon: 33,
+                            }
+                        },
+                        {
+                            duration: {
+                                value: 3000
+                            },
+                            end_location: {
+                                lat: 12,
+                                lon: 34,
+                            },
+                            start_location: {
+                                lat: 11,
+                                lon: 33,
+                            }
+                        },
+                        {
+                            duration: {
+                                value: 1000
+                            },
+                            end_location: {
+                                lat: 12,
+                                lon: 34,
+                            },
+                            start_location: {
+                                lat: 11,
+                                lon: 33,
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
+const mockTwoBigStepsOneSmallStepsOverAnHourData = {
+    routes: [
+        {
+            legs: [
+                {
+                    duration: {
+                        value: 11300
+                    },
+                    steps: [
+                        {
+                            duration: {
+                                value: 4000
+                            },
+                            end_location: {
+                                lat: 12,
+                                lon: 34,
+                            },
+                            start_location: {
+                                lat: 11,
+                                lon: 33,
+                            }
+                        },
+                        {
+                            duration: {
+                                value: 300
+                            },
+                            end_location: {
+                                lat: 12,
+                                lon: 34,
+                            },
+                            start_location: {
+                                lat: 11,
+                                lon: 33,
+                            }
+                        },
+                        {
+                            duration: {
+                                value: 7000
+                            },
+                            end_location: {
+                                lat: 12,
+                                lon: 34,
+                            },
+                            start_location: {
+                                lat: 11,
+                                lon: 33,
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+};
+
 module.exports = {
     mockSlightlyMoreThanJustOneIntervalData,
     mockLessThanOneIntervalData,
     mockThreeStepsOverOneIntervalData,
     mockThreeStepsLessThanAnHourData,
-    mockThreeStepsSlightlyMoreThanAnHourData
+    mockThreeStepsSlightlyMoreThanAnHourData,
+    mockMoreThanAnHourData,
+    mockThreeStepsMoreThanAnHourData,
+    mockTwoBigStepsOneSmallStepsOverAnHourData
 }

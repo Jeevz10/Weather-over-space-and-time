@@ -2,7 +2,10 @@ const { mockSlightlyMoreThanJustOneIntervalData,
 mockLessThanOneIntervalData,
 mockThreeStepsOverOneIntervalData,
 mockThreeStepsLessThanAnHourData,
-mockThreeStepsSlightlyMoreThanAnHourData } = require('./MockRouteData');
+mockThreeStepsSlightlyMoreThanAnHourData,
+mockMoreThanAnHourData,
+mockThreeStepsMoreThanAnHourData,
+mockTwoBigStepsOneSmallStepsOverAnHourData } = require('./MockRouteData');
 
 
 function mockSlightlyMoreThanJustOneIntervalRoute() {
@@ -25,11 +28,26 @@ function mockThreeStepsSlightlyMoreThanAnHourRoute() {
     return mockThreeStepsSlightlyMoreThanAnHourData;
 }
 
+function mockOneStepThatIsMoreThanAnHourRoute() {
+    return mockMoreThanAnHourData;
+}
+
+function mockThreeStepsMoreThanAnHourRoute() {
+    return mockThreeStepsMoreThanAnHourData;
+}
+
+function mockTwoBigStepsOneSmallStepsOverAnHourRoute() {
+    return mockTwoBigStepsOneSmallStepsOverAnHourData;
+}
+
 
 module.exports = {
     mockSlightlyMoreThanJustOneIntervalRoute,
     mockLessThanOneIntervalRoute,
     mockThreeStepsOverOneIntervalRoute,
     mockThreeStepsLessThanAnHourRoute,
-    mockThreeStepsSlightlyMoreThanAnHourRoute
+    mockThreeStepsSlightlyMoreThanAnHourRoute,
+    mockOneStepThatIsMoreThanAnHourRoute,
+    mockThreeStepsMoreThanAnHourRoute,
+    mockTwoBigStepsOneSmallStepsOverAnHourRoute
 }

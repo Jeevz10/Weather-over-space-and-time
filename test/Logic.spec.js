@@ -7,12 +7,23 @@ const { mockSlightlyMoreThanJustOneIntervalRoute,
 mockLessThanOneIntervalRoute,
 mockThreeStepsOverOneIntervalRoute,
 mockThreeStepsLessThanAnHourRoute,
-mockThreeStepsSlightlyMoreThanAnHourRoute } = require('./stubs/MockRoute');
+mockThreeStepsSlightlyMoreThanAnHourRoute,
+mockOneStepThatIsMoreThanAnHourRoute,
+mockThreeStepsMoreThanAnHourRoute,
+mockTwoBigStepsOneSmallStepsOverAnHourRoute } = require('./stubs/MockRoute');
 const { mockCurrentData, mockHourlyData } = require('./stubs/MockWeatherData');
 
 Chai.use(ChaiAsPromised);
 Chai.should();
 const { expect } = Chai;
+
+function handleHour(index) {
+    const { lat, lon, timezone, timezone_offset, hourly } = mockHourlyData;
+    let hourlyData = [];
+    hourlyData.push(hourly[index])
+    const curatedHourlyData = { lat, lon, timezone, timezone_offset, hourlyData };
+    return curatedHourlyData;
+}
 
 describe.only('test the logic', () => {
 
@@ -109,15 +120,90 @@ describe.only('test the logic', () => {
             const mService = new mockService('b', 'c', 'bicycling', '15');
             const res = await mService.getWeatherOverSpaceAndTime();
             
-            const { lat, lon, timezone, timezone_offset, hourly } = mockHourlyData;
-            let hourlyData = [];
-            hourlyData.push(hourly[1])
-            const curatedHourlyData = { lat, lon, timezone, timezone_offset, hourlyData };
-            
+            const curatedHourlyData = handleHour(1);
             const expectedResponse = { result: [mockCurrentData, mockCurrentData, mockCurrentData, curatedHourlyData] };
             expect(res).to.eql(expectedResponse);
         })
     })
 
-})
+    describe('for routes more than an hour', () => {
+        it('should 1 current and 1 hour data for a single route than takes an hour long', async () => {
+            const stub = {
+                './weather': {
+                    'makeOpenWeatherAPICall': mockWeather,
+                    '@global': true
+                },
+                './route': {
+                    'makeGoogleMapsAPICall': mockOneStepThatIsMoreThanAnHourRoute,
+                    '@global': true
+                }
+            }
+            const mockService = proxyQuire('../service', stub);
+            const mService = new mockService('b', 'c', 'bicycling', '15');
+            const res = await mService.getWeatherOverSpaceAndTime();
+            
+            const { lat, lon, timezone, timezone_offset, hourly } = mockHourlyData;
+            let hourlyData = [];
+            hourlyData.push(hourly[1])
+            const curatedHourlyData = { lat, lon, timezone, timezone_offset, hourlyData };
 
+            const expectedResponse = { result: [mockCurrentData, curatedHourlyData] };
+            expect(res).to.eql(expectedResponse);
+        })
+
+        it('should 2 current and 2 hour data for two steps that takes an hour long', async () => {
+            const stub = {
+                './weather': {
+                    'makeOpenWeatherAPICall': mockWeather,
+                    '@global': true
+                },
+                './route': {
+                    'makeGoogleMapsAPICall': mockThreeStepsMoreThanAnHourRoute,
+                    '@global': true
+                }
+            }
+            const mockService = proxyQuire('../service', stub);
+            const mService = new mockService('b', 'c', 'bicycling', '15');
+            const res = await mService.getWeatherOverSpaceAndTime();
+            
+            const { lat, lon, timezone, timezone_offset, hourly } = mockHourlyData;
+            let hourlyData = [];
+            hourlyData.push(hourly[1]);
+            const curatedHourlyData = { lat, lon, timezone, timezone_offset, hourlyData };
+
+            // console.log('res' + JSON.stringify(res));
+            const expectedResponse = { result: [mockCurrentData, mockCurrentData, curatedHourlyData, curatedHourlyData] };
+            expect(res).to.eql(expectedResponse);
+        })
+
+        // it('should 1 current and 3 hour data for two steps that takes an hour long', async () => {
+        //     const stub = {
+        //         './weather': {
+        //             'makeOpenWeatherAPICall': mockWeather,
+        //             '@global': true
+        //         },
+        //         './route': {
+        //             'makeGoogleMapsAPICall': mockTwoBigStepsOneSmallStepsOverAnHourRoute,
+        //             '@global': true
+        //         }
+        //     }
+        //     const mockService = proxyQuire('../service', stub);
+        //     const mService = new mockService('b', 'c', 'bicycling', '15');
+        //     const res = await mService.getWeatherOverSpaceAndTime();
+            
+        //     const { lat, lon, timezone, timezone_offset, hourly } = mockHourlyData;
+        //     let firstHourData = [];
+        //     firstHourData.push(hourly[1]);
+        //     const curatedOneHourlyData = { lat, lon, timezone, timezone_offset, hourlyData: firstHourData };
+
+        //     let thirdHourData = [];
+        //     thirdHourData.push(hourly[3]);
+        //     const curatedThirdHourlyData = { lat, lon, timezone, timezone_offset, hourlyData: thirdHourData };
+
+        //     console.log('res' + JSON.stringify(res));
+        //     const expectedResponse = { result: [mockCurrentData, curatedOneHourlyData, curatedOneHourlyData, curatedThirdHourlyData ] };
+        //     expect(res).to.eql(expectedResponse);
+        // })
+    })
+
+})

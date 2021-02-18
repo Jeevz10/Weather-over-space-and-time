@@ -13,18 +13,17 @@ module.exports = class Service {
 
     async getWeatherOverSpaceAndTime() {
         const leg = await this.getLegs();
-        console.log(leg);
+        // console.log(leg);
         const totalDuration = leg.duration.value;
         const WeatherAccumulatorInstance = new WeatherAccumulator(totalDuration, this.increment);
         const steps = leg.steps;
         const result = await this.gatherWeatherData(WeatherAccumulatorInstance, steps);
-        return { leg, result };
+        return { result };
     }
 
     async getLegs() {
-        console.log('im here');
         const route = await makeGoogleMapsAPICall(this.start, this.end, this.mode);
-        console.log(route);
+        // console.log(route);
         const leg = route.routes[0].legs[0];
         return leg;
     }
