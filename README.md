@@ -50,7 +50,7 @@ I had considered other map routing APIs such as Azure and OpenStreetMap. These A
  OpenWeatherMap One Call API 
 </a> 
 
-I subscribed to an OpenWeatherMap free account. This account prescribes me to only use One Call API. All other API services requires me to be on a different paid plan which is not entirely needed for the purposes of this exercise. 
+I subscribed to an OpenWeatherMap free account. This account entitles me to only use One Call API. All other API services requires me to be on a different paid plan which is not entirely needed for the purposes of this exercise. 
 
 This API is able to give current and hourly weather updates for any lat and lon. As mentioned earlier, I needed to be on a different plan to utilize the important features such as 15-min / 30-min and 45-min weather forecasts. 
 
@@ -66,9 +66,12 @@ GET / http://localhost:3000/route-weather
 
 Required Query Params 
 
-| start  | end | mode | increment  | 
-| --- | --- | --- | --- | 
-| location (String) | location (String) | driving/walking/bicycling/transit | 1-60 | 
+| params | example  | remarks |
+| --- | --- | --- |
+| start | brooklyn | Only alphabetical words are allowed |
+| end | boston | Only alphabetical words are allowed | 
+| mode | driving | Only one of the following is allowed: driving/walking/bicycling/transit | 
+| increment | 15 | Any integer value between 1-60 | 
 
 ## Implementation 
 
@@ -106,7 +109,7 @@ General Rule - Only the starting and end locations of a step will be considered 
 
 (7) - Similar to (4), both the start and end points are considered. 
 
-(11) - This interesting in the event of a step that takes an hour long. Hence, a check is done in the class to see if the duration ever suddenly shoots up beyond the hour. If so, the hourly data of the end point will be added. 
+(11) - This is interesting in the event of a step that takes an hour long. Hence, a check is done in the class to see if the duration ever suddenly shoots up beyond the hour. If so, the hourly data of the end point will be added. 
 
 (8) - This is tricky because the end point could happen anytime. It could happen before the hour like in (1), (9), (10) or after the hour like in (11). The point is, it could happen anywhere. This is why the last step provided by google map api will send a `lastStep` flag to denote its arrival. The weather data of the end point will be added. 
 
