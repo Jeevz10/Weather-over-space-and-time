@@ -39,17 +39,19 @@ module.exports = class WeatherAccumulator {
 
         // handle cases before the hour 
         if (WeatherAccumulator.incrementAccumulator < WeatherAccumulator.SECONDS_IN_AN_HOUR) {
+            console.log('increment accumulated is lesser than an hour');
             // handle starting point
             if (!WeatherAccumulator.startPointRecorded) {
                 const startWeather = await this.getCurrentWeather(startLat, startLng);
                 WeatherAccumulator.weatherData.push(startWeather);
-                console.log('start point pushed\n');
+                console.log('start point pushed and start point recorded\n');
                 WeatherAccumulator.startPointRecorded = true;
             } 
 
             // exclusively handle the cases when duration is lesser than an hour  
             
             if (WeatherAccumulator.durationAccumulator < WeatherAccumulator.SECONDS_IN_AN_HOUR) {
+                console.log('duration accumulated is smaller than an hour');
                 if (isLast) {
                     const endWeather = await this.getCurrentWeather(endLat, endLng);
                     WeatherAccumulator.weatherData.push(endWeather);
@@ -57,23 +59,29 @@ module.exports = class WeatherAccumulator {
                 } else if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
                     // handle cases when duration taken is larger than the increment aka it jumped increments 
                     if (this.incrementCounter() > 1) {
+                        console.log('step has skipped more than 1 interval points');
                         await this.handleLongerInstancesBeforeOneHour(startLat, startLng, endLat, endLng, secondsPerStep);
                     } else {
                         // handle cases when duration is longer than increment but has not jumped increments
+                        console.log('step has only skipped past 1 interval point');
                         await this.handleBeforeOneHour(startLat, startLng, endLat, endLng, secondsPerStep);
                     }
                     WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / this.incrementInSeconds) * this.incrementInSeconds;
                 } else {
+                    console.log(`this step's end point is not recorded`);
                     WeatherAccumulator.previousEndPointRecorded = false;
                 }
             } else {
                 // handles cases when duration exceeded an hour and there is a need to look at hourly data 
+                console.log('duration accumulated is more than an hour');
 
                 // handles scenario when it is the last step 
                 if (isLast) {
+                    console.log('end point reached and about to be pushed');
                     this.increaseHour();
                     this.extractAndPushData(endLat, endLng);
                 } else {
+                    console.log('this step has broken the hour and now, hourly data is to be used');
                     await this.handleInstancesThatBreaksTheHour(startLat, startLng, endLat, endLng, secondsPerStep);
                 }
                 // if duration of particular step is longer than an hour, increase the accumulator by the amount of hours. Firstly, reset increment accumulator to 3600
@@ -81,22 +89,29 @@ module.exports = class WeatherAccumulator {
                 WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
             }
         } else {
-
+            console.log('increment accumulated is more than an hour');
             if (WeatherAccumulator.durationAccumulator >= WeatherAccumulator.incrementAccumulator) {
+                console.log('duration accumulated is higher than increment accumulated');
                 if (isLast) {
+                    console.log('end point reached and about to be pushed');
                     this.increaseHour();
                     await this.extractAndPushData(endLat, endLng);
                 } else if (this.hourCounter() > 1) {
+                    console.log('step has skipped multiple hours');
                     await this.handleLongerInstancesAfterOneHour(startLat, startLng, endLat, endLng);
                 } else {
                     // handle cases when duration is longer than increment but has not jumped increments
+                    console.log('step has skipped one hour');
                     await this.handleAfterOneHour(startLat, startLng, endLat, endLng, secondsPerStep);
                 } 
                 WeatherAccumulator.incrementAccumulator += Math.ceil(secondsPerStep / WeatherAccumulator.SECONDS_IN_AN_HOUR) * WeatherAccumulator.SECONDS_IN_AN_HOUR; // second hour 
             } else {
+                console.log('duration accumulated is lesser than increment accumulated');
                 if (isLast) {
+                    console.log('end point reached and about to be pushed ');
                     await this.extractAndPushData(endLat, endLng);
                 }
+                console.log(`this step's end point is not recorded`);
                 WeatherAccumulator.previousEndPointRecorded = false;
             }
 
@@ -116,13 +131,13 @@ module.exports = class WeatherAccumulator {
 
     hourCounter() {
         const hourCounter = Math.ceil((WeatherAccumulator.durationAccumulator - WeatherAccumulator.incrementAccumulator) / WeatherAccumulator.SECONDS_IN_AN_HOUR);
-        console.log('hour counter: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator + ' ' + hourCounter + '\n');
+        console.log('hour counter: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator + ' ' + hourCounter);
         return hourCounter;
     }
 
     incrementCounter() {
         const incrementCounter = Math.ceil((WeatherAccumulator.durationAccumulator - WeatherAccumulator.incrementAccumulator) / this.incrementInSeconds);
-        console.log('increment counter: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator + ' ' + incrementCounter + '\n');
+        console.log('increment counter: ' + WeatherAccumulator.durationAccumulator + ' ' + WeatherAccumulator.incrementAccumulator + ' ' + incrementCounter);
         return incrementCounter;
     }
 
@@ -152,12 +167,12 @@ module.exports = class WeatherAccumulator {
             const startWeather = await this.getHourlyWeather(startLat, startLng);
             weather = this.handleHourlyData(startWeather);
             WeatherAccumulator.previousEndPointRecorded = false;
-            console.log('instances where it jumps to the next hour: start point recorded\n');
+            console.log('instances where it jumps to the next hour: start point recorded. data pushed\n');
         } else {
             const endWeather = await this.getHourlyWeather(endLat, endLng);
             weather = this.handleHourlyData(endWeather);
             WeatherAccumulator.previousEndPointRecorded = true;
-            console.log('instances where it jumps 1 hour: end point recorded // prevEndPoint = true \n');
+            console.log('instances where it jumps 1 hour: end point recorded // prevEndPoint = true . data pushed\n');
         }
 
         WeatherAccumulator.weatherData.push(weather);
@@ -174,7 +189,7 @@ module.exports = class WeatherAccumulator {
         this.increaseHour();
         this.extractAndPushData(endLat, endLng);
         WeatherAccumulator.previousEndPointRecorded = true;
-        console.log('instances where it breaks the hour: end point recorded and prevEndPoint = true \n');
+        console.log('instances where it breaks the hour: end point recorded and prevEndPoint = true. data pushed \n');
     }
 
     async handleLongerInstancesBeforeOneHour(startLat, startLng, endLat, endLng) {
@@ -182,13 +197,13 @@ module.exports = class WeatherAccumulator {
         if (!WeatherAccumulator.previousEndPointRecorded) {
             const startWeather = await this.getCurrentWeather(startLat, startLng);
             WeatherAccumulator.weatherData.push(startWeather);
-            console.log('instances where it jumps 2 or more hours: start point recorded\n');
+            console.log('instances where it jumps 2 or more hours: start point recorded. data pushed');
         }
 
         const endWeather = await this.getCurrentWeather(endLat, endLng);
         WeatherAccumulator.previousEndPointRecorded = true;
         WeatherAccumulator.weatherData.push(endWeather);
-        console.log('instances where it jumps 2 or more hours: end point recorded // prevEndPoint = true \n');
+        console.log('instances where it jumps 2 or more hours: end point recorded // prevEndPoint = true . data pushed\n');
 
     }
     async handleBeforeOneHour(startLat, startLng, endLat, endLng, secondsPerStep) {

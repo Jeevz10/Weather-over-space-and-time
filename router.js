@@ -14,7 +14,7 @@ const Service = require('./service');
 
 AppRouter.get('/route-weather', checkQueryParams, checkInvalidValues, async (ctx) => {
     const { start, end, mode, increment } = ctx.query;
-    console.log(start, end, mode, increment);
+    console.log(`GET /route-weather called. The following parameters are: start: ${start}, end: ${end}, mode: ${mode}, increment: ${increment}`);
     const serviceInstance = new Service(start, end, mode, increment);
     const result = await serviceInstance.getWeatherOverSpaceAndTime();
     ctx.status = 200;

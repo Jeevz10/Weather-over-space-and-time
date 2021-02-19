@@ -13,7 +13,6 @@ module.exports = class Service {
 
     async getWeatherOverSpaceAndTime() {
         const leg = await this.getLegs();
-        // console.log(leg);
         const totalDuration = leg.duration.value;
         const WeatherAccumulatorInstance = new WeatherAccumulator(totalDuration, this.increment);
         const steps = leg.steps;
@@ -23,7 +22,6 @@ module.exports = class Service {
 
     async getLegs() {
         const route = await makeGoogleMapsAPICall(this.start, this.end, this.mode);
-        // console.log(route);
         const leg = route.routes[0].legs[0];
         return leg;
     }
@@ -33,9 +31,7 @@ module.exports = class Service {
      * @param {*} WeatherAccumulatorInstance 
      * @param {*} steps 
      * 
-     * The goal of this function is split into 2 parts: 
-     * (1) weather data in specified increments up till an hour 
-     * (2) weather data every other hour 
+     * The goal of this function is to iterate through all the steps and account for the weather data along the route
      */
     async gatherWeatherData(WeatherAccumulatorInstance, steps) {
         const numberOfSteps = steps.length;
