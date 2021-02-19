@@ -25,7 +25,7 @@ function handleHour(index) {
     return curatedHourlyData;
 }
 
-describe.only('test the logic', () => {
+describe('test the logic', () => {
 
     describe('for routes less than an hour', () => {
         it('should return only 2 current data for duration of journey is less than 1 interval', async () => {
