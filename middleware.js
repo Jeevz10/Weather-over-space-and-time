@@ -3,7 +3,6 @@ const _ = require('lodash');
 const REQUIRED_KEYS = ['start', 'end', 'mode', 'increment'];
 
 const REQUIRED_MODE = ['driving', 'walking', 'bicycling', 'transit'];
-// TODO Give proper error handling with error codes and stuff 
 
 // Reasons why all middleware has to be async functions as well as have await next() https://github.com/koajs/koa/issues/905
 
